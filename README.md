@@ -48,7 +48,7 @@ public class Main {
         // Add data
         p.add("Sensor A", 1.0, 10.5);
         p.add("Sensor A", 2.0, 15.2);
-
+        //p.plot();
         // Export to 4K image
         p.img(3840, 2160, "output.png");
     }
@@ -66,8 +66,8 @@ public class MathMain {
 
         p.create(new Color(192, 57, 43), "name", "Parabola", "type", "FUNCTION", "style", "SOLID");
         p.add("Parabola", -10.0, 10.0, 1000, x -> Math.pow(x, 2));
-
-        p.img(1920, 1080, "function.png");
+        p.plot();
+        //p.img(1920, 1080, "function.png");
     }
 }
 ```
