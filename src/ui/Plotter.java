@@ -9,14 +9,30 @@ import javax.swing.*;
 import java.awt.*;
 import java.util.function.DoubleUnaryOperator;
 
+/**
+ * Clase principal y fachada (Facade) del motor de renderizado jPlot.
+ * Proporciona una API unificada para la creación, configuración y exportación
+ * de diferentes tipos de gráficos (Líneas, Barras, Burbujas, Sectores, etc.).
+ * Permite tanto la visualización en ventana (Swing) como la exportación "headless" a imagen.
+ */
 public class Plotter {
 
-    // Constantes públicas para que el usuario sepa qué Strings puede usar
+    /** Constante para el gráfico de líneas continuas o funciones. */
     public static final String LINE_CHART = "LINE";
+
+    /** Constante para el gráfico de burbujas (3 dimensiones de datos). */
     public static final String BUBBLE_CHART = "BUBBLE";
+
+    /** Constante para el gráfico de barras verticales. */
     public static final String BAR_CHART = "BAR";
+
+    /** Constante para el gráfico de sectores (tarta). */
     public static final String PIE_CHART = "PIE";
+
+    /** Constante para el gráfico de barras horizontales. */
     public static final String HBAR_CHART = "HBAR";
+
+    /** Constante para el gráfico de barras apiladas. */
     public static final String STACKED_BAR_CHART = "STACKED_BAR";
 
     private final String title;
@@ -24,13 +40,20 @@ public class Plotter {
     private final Dataset dataset;
     private boolean gridH = true, gridV = true;
 
-    // EL NUEVO CONSTRUCTOR MAGNÍFICO (Solo pide Strings)
+    /**
+     * Construye un nuevo Plotter instanciando el motor de renderizado adecuado
+     * basándose en el tipo de gráfico solicitado.
+     *
+     * @param title     El título general del gráfico que aparecerá en la parte superior.
+     * @param chartType El tipo de gráfico a renderizar. Debe ser una de las constantes de esta clase (ej. {@link #LINE_CHART}).
+     * @param xTitle    El título o etiqueta para el eje X (horizontal).
+     * @param yTitle    El título o etiqueta para el eje Y (vertical).
+     */
     public Plotter(String title, String chartType, String xTitle, String yTitle) {
         this.title = title;
 
         // LA FÁBRICA: El Plotter decide qué motor arrancar basándose en el String
         if (BUBBLE_CHART.equalsIgnoreCase(chartType)) {
-            // Construimos el universo de burbujas en secreto
             Dataset bData = new BubbleDataset();
             bubble.BubbleConfig bConfig = new bubble.BubbleConfig(xTitle, yTitle);
             bConfig.setDataset(bData);
@@ -38,7 +61,6 @@ public class Plotter {
             this.info = bConfig;
             this.dataset = bData;
         } else if (BAR_CHART.equalsIgnoreCase(chartType)) {
-            // ¡NUEVO! Motor de Barras
             bar.BarDataset barData = new bar.BarDataset();
             bar.BarConfig barConfig = new bar.BarConfig(xTitle, yTitle);
             barConfig.setDataset(barData);
@@ -49,6 +71,7 @@ public class Plotter {
             pie.PieDataset pData = new pie.PieDataset();
             pie.PieConfig pConfig = new pie.PieConfig(title);
             pConfig.setDataset(pData);
+
             this.info = pConfig;
             this.dataset = pData;
         } else if (STACKED_BAR_CHART.equalsIgnoreCase(chartType)) {
@@ -58,7 +81,7 @@ public class Plotter {
 
             this.info = sConfig;
             this.dataset = sData;
-        }else if (HBAR_CHART.equalsIgnoreCase(chartType)) {
+        } else if (HBAR_CHART.equalsIgnoreCase(chartType)) {
             hbar.HBarDataset hbData = new hbar.HBarDataset();
             hbar.HBarConfig hbConfig = new hbar.HBarConfig(xTitle, yTitle);
             hbConfig.setDataset(hbData);
@@ -76,6 +99,10 @@ public class Plotter {
         }
     }
 
+    /**
+     * Renderiza el gráfico en una ventana nativa del sistema operativo usando Swing.
+     * Útil para visualización en tiempo real durante el desarrollo o en aplicaciones de escritorio.
+     */
     public void plot() {
         info.setGridH(gridH);
         info.setGridV(gridV);
@@ -88,18 +115,49 @@ public class Plotter {
         f.setVisible(true);
     }
 
+    /**
+     * Define y crea una nueva serie de datos dentro del gráfico.
+     *
+     * @param color El color principal que representará a esta serie.
+     * @param info  Pares de clave-valor con la configuración de la serie
+     * (ej. "name", "MiSerie", "type", "LINE", "style", "SOLID").
+     */
     public void create(Color color, String... info) {
         dataset.create(color, info);
     }
 
+    /**
+     * Añade un nuevo punto de datos a una serie existente usando coordenadas puramente numéricas.
+     *
+     * @param series El nombre de la serie a la que se añadirá el dato.
+     * @param x      Las coordenadas numéricas del punto. Para 2D (x, y). Para burbujas (x, y, tamaño).
+     */
     public void add(String series, double... x) {
         dataset.add(series, x);
     }
 
+    /**
+     * Añade un nuevo punto de datos a una serie existente usando una categoría (texto) en lugar de una coordenada X.
+     * Orientado principalmente a gráficos de barras o sectores.
+     *
+     * @param name     El nombre de la serie.
+     * @param category La etiqueta categórica (ej. "Q1", "Europa", "Java").
+     * @param value    El valor numérico asociado a la categoría.
+     */
     public void add(String name, String category, double value) {
         dataset.add(name, category, value);
     }
 
+    /**
+     * Evalúa una función matemática nativa de Java y genera los puntos automáticamente
+     * para dibujarla en el lienzo.
+     *
+     * @param seriesName El nombre de la serie bajo la que se registrará la función.
+     * @param minX       El límite inferior del dominio a evaluar (Eje X).
+     * @param maxX       El límite superior del dominio a evaluar (Eje X).
+     * @param numPoints  La resolución de la curva. A mayor número, más suave será el trazo.
+     * @param function   Expresión Lambda que define la función (ej. {@code x -> Math.sin(x)}).
+     */
     public void add(String seriesName, double minX, double maxX, int numPoints, DoubleUnaryOperator function) {
         if (numPoints <= 0 || maxX <= minX) {
             System.err.println("Error: Rango o número de puntos inválido para la función.");
@@ -112,39 +170,71 @@ public class Plotter {
         // Evaluamos la función de izquierda a derecha
         for (int i = 0; i <= numPoints; i++) {
             double x = minX + (i * step);
-            double y = function.applyAsDouble(x); // Aquí se ejecuta la matemática del usuario
+            double y = function.applyAsDouble(x);
 
             // Reutilizamos el motor interno pasando X e Y
             dataset.add(seriesName, x, y);
         }
     }
 
-    // Control del Grid
+    /**
+     * Activa o desactiva la cuadrícula general del gráfico de forma global (ambos ejes).
+     *
+     * @param grid {@code true} para mostrar la cuadrícula, {@code false} para ocultarla.
+     */
     public void grid(boolean grid) {
         this.gridH = grid;
         this.gridV = grid;
     }
 
+    /**
+     * Controla la visibilidad de la cuadrícula de forma independiente para cada eje.
+     *
+     * @param h {@code true} para dibujar las líneas horizontales.
+     * @param v {@code true} para dibujar las líneas verticales.
+     */
     public void grid(boolean h, boolean v) {
         this.gridH = h;
         this.gridV = v;
     }
 
+    /**
+     * Activa o desactiva las líneas de seguimiento (crosshair) que acompañan al cursor
+     * al interactuar con el gráfico en el modo UI.
+     *
+     * @param showX {@code true} para mostrar la línea vertical del cursor.
+     * @param showY {@code true} para mostrar la línea horizontal del cursor.
+     */
     public void crosshair(boolean showX, boolean showY) {
         if (info != null) {
             info.setCrosshair(showX, showY);
         }
     }
 
+    /**
+     * Exporta el gráfico actual a un archivo de imagen utilizando la resolución por defecto (800x600).
+     * El renderizado es "headless", no requiere abrir ninguna ventana.
+     *
+     * @param path La ruta del archivo destino (ej. "output.png").
+     */
     public void img(String path) {
         img(800, 600, path);
     }
 
+    /**
+     * Exporta el gráfico actual a un archivo de imagen definiendo una resolución personalizada.
+     * Implementa un sistema de renderizado "headless" puro mediante pre-cálculo de matrices.
+     *
+     * @param width  La anchura de la imagen en píxeles.
+     * @param height La altura de la imagen en píxeles.
+     * @param path   La ruta del archivo destino. Soporta auto-detección de extensión (.png, .jpg).
+     */
     public void img(int width, int height, String path) {
         // 1. Sincronizamos la configuración visual
         info.setGridH(gridH);
         info.setGridV(gridV);
-// 3. Creamos un panel "Fantasma" totalmente independiente de la UI
+
+        // 3. Creamos un panel "Fantasma" totalmente independiente de la UI
         ChartPanel headlessPanel = new ChartPanel(new LoadingPanel(), info);
 
         // ¡CRÍTICO! Le damos un tamaño físico en memoria para que getWidth() funcione

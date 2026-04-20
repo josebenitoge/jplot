@@ -1,6 +1,5 @@
 package ui;
 
-
 import model.*;
 import model.Point;
 
@@ -8,6 +7,15 @@ import javax.swing.*;
 import java.awt.*;
 import java.awt.event.MouseEvent;
 
+/**
+ * Lienzo principal del motor de renderizado jPlot.
+ * Esta clase actúa como puente entre el framework gráfico de Swing y el motor
+ * de renderizado por software interno basado en matrices de píxeles.
+ * * Gestiona el pipeline de dibujado en capas:
+ * 1. Cuadrícula (Grid) inferior.
+ * 2. Matriz de píxeles (Gráfica pura con antialiasing).
+ * 3. Elementos vectoriales superpuestos (Ejes, textos, leyenda, tooltips).
+ */
 public class ChartPanel extends JPanel {
 
     private Pixel[][] pixels;
@@ -15,22 +23,44 @@ public class ChartPanel extends JPanel {
     private final LoadingPanel loading;
     private final Config info;
 
-    public int leftM, rightM, topM, bottomM;
+    /** Margen izquierdo del área útil de la gráfica respecto al ancho total. */
+    public int leftM;
+    /** Margen derecho del área útil de la gráfica respecto al ancho total. */
+    public int rightM;
+    /** Margen superior del área útil de la gráfica respecto a la altura total. */
+    public int topM;
+    /** Margen inferior del área útil de la gráfica respecto a la altura total. */
+    public int bottomM;
 
+    /**
+     * Construye el panel de renderizado principal.
+     *
+     * @param loading Componente encargado de mostrar la animación de carga.
+     * @param info    Configuración y origen de los datos a renderizar.
+     */
     public ChartPanel(LoadingPanel loading, Config info) {
         setBackground(Color.WHITE);
         this.loading = loading;
         this.info = info;
-        setToolTipText(""); // Activa el motor de tooltips
+        setToolTipText(""); // Habilita el sistema de Tooltips nativo de Swing
     }
 
+    /**
+     * Cambia el estado del renderizador entre "cargando" y "listo".
+     * Si está cargando, el pipeline gráfico se suspende para mostrar la animación.
+     *
+     * @param loading true para suspender el renderizado y mostrar la carga.
+     */
     public void setLoading(boolean loading) {
         this.isLoading = loading;
     }
 
-    // ========================================================
-    // 1. DISEÑO DEL POPUP (Bordes redondos y fondo blanco)
-    // ========================================================
+    /**
+     * Sobrescribe la instanciación del tooltip por defecto de Swing para
+     * inyectar un componente con diseño personalizado (bordes redondeados y fondo limpio).
+     *
+     * @return Un objeto JToolTip personalizado.
+     */
     @Override
     public JToolTip createToolTip() {
         JToolTip tip = new JToolTip() {
@@ -62,9 +92,15 @@ public class ChartPanel extends JPanel {
         return tip;
     }
 
-    // ========================================================
-    // 2. CONTENIDO DEL POPUP (Colores del texto)
-    // ========================================================
+    /**
+     * Calcula dinámicamente el contenido del tooltip basándose en la posición del ratón.
+     * Implementa un algoritmo de búsqueda de vecino más cercano (Nearest Neighbor)
+     * iterando sobre los datos matemáticos y proyectándolos a coordenadas de pantalla.
+     *
+     * @param e El evento del ratón que disparó el tooltip.
+     * @return Código HTML formateado con la información del punto más cercano,
+     * o null si el cursor está fuera del área útil.
+     */
     @Override
     public String getToolTipText(MouseEvent e) {
         if (info == null || info.getDataset() == null) return null;
@@ -72,6 +108,7 @@ public class ChartPanel extends JPanel {
         int mx = e.getX();
         int my = e.getY();
 
+        // Evitar cálculos si el ratón está fuera de los márgenes de la gráfica
         if (mx < leftM || mx > rightM || my < topM || my > bottomM) return null;
 
         Dataset lineDataset = info.getDataset();
@@ -87,7 +124,7 @@ public class ChartPanel extends JPanel {
         if (maxX == minX) { maxX += 1; minX -= 1; }
         if (maxY == minY) { maxY += 1; minY -= 1; }
 
-        double closestDist = 10.0;
+        double closestDist = 10.0; // Umbral de tolerancia de 10 píxeles
         String tooltip = null;
 
         for (Series set : lineDataset.series().values()) {
@@ -108,8 +145,8 @@ public class ChartPanel extends JPanel {
                     String hexColor = String.format("#%02x%02x%02x",
                             set.color().getRed(), set.color().getGreen(), set.color().getBlue());
 
-                    // Usamos HTML para formatear el texto exactamente como pediste
-                    // &#9679; es un círculo relleno para mostrar el color original
+                    // Usamos HTML para formatear el texto
+                    // &#9679; es un círculo relleno para mostrar el color original de la serie
                     tooltip = String.format("<html><div style='font-family: sans-serif;'>" +
                                             "<b><font color='%s'>&#9679;</font> <font color='black'>%s</font></b><br>" +
                                             "<font color='#777777'>X: %.2f</font><br>" +
@@ -122,14 +159,19 @@ public class ChartPanel extends JPanel {
         return tooltip;
     }
 
-    // ========================================================
-    // DIBUJO DEL LIENZO
-    // ========================================================
+    /**
+     * Bucle principal de renderizado gráfico.
+     * Orquesta el dibujado secuencial del fondo, la matriz de píxeles precalculada
+     * y los metadatos vectoriales.
+     *
+     * @param g Contexto gráfico suministrado por el EDT de Swing.
+     */
     @Override
     protected void paintComponent(Graphics g) {
         super.paintComponent(g);
         Graphics2D g2 = (Graphics2D) g;
 
+        // Si estamos cargando datos, delegamos el dibujado al panel de carga
         if (isLoading) {
             loading.setSize(getSize());
             loading.paintComponent(g2);
@@ -139,6 +181,7 @@ public class ChartPanel extends JPanel {
         int currentWidth = getWidth();
         int currentHeight = getHeight();
 
+        // Control de reescalado: si la ventana cambió de tamaño, se recalcula la matriz
         if (pixels == null || currentWidth != pixels.length || currentHeight != pixels[0].length) {
             fillMatrix(currentWidth, currentHeight);
         }
@@ -150,8 +193,8 @@ public class ChartPanel extends JPanel {
         // ========================================================
         info.drawHorizontalGrid(g2, leftM, rightM, topM, bottomM);
         info.drawVerticalGrid(g2, leftM, rightM, topM, bottomM);
-
         info.drawCrosshair(g2, leftM, rightM, topM, bottomM);
+
         // ========================================================
         // 2. DIBUJAR PÍXELES DE LAS GRÁFICAS (Encima del grid)
         // ========================================================
@@ -174,7 +217,15 @@ public class ChartPanel extends JPanel {
         info.drawLegend(g2, rightM + 20, topM);
     }
 
+    /**
+     * Inicializa y precalcula la matriz bidimensional de píxeles que conforma la gráfica principal.
+     * Este método realiza el trabajo matemático pesado antes de la llamada a repaint().
+     *
+     * @param w Anchura total disponible en el lienzo en el momento actual.
+     * @param h Altura total disponible en el lienzo en el momento actual.
+     */
     protected void fillMatrix(int w, int h) {
+        // Cálculo de márgenes dinámicos en base al tamaño de la ventana
         leftM = (int) (w * 0.08 + 70);
         rightM = w - (int) (w * 0.08 + 120);
         topM = (int) (h * 0.10 + 20);
@@ -188,6 +239,8 @@ public class ChartPanel extends JPanel {
                 pixels[i][j] = new Pixel(i, j, Color.WHITE);
             }
         }
+
+        // Inyección de la matriz en los motores para la computación y mezcla (blending) de los píxeles
         info.bindBorders(pixels, leftM, rightM, topM, bottomM);
         info.bind(pixels, leftM, rightM, topM, bottomM);
     }

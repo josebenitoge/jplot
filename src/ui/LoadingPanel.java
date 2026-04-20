@@ -4,26 +4,34 @@ import javax.swing.*;
 import java.awt.*;
 
 /**
- * A minimalist loading screen that draws three animated dots
- * in the center of the component.
+ * Panel de interfaz de usuario que muestra una animación de carga minimalista.
+ * Dibuja una secuencia de hasta tres puntos suspensivos en el centro del componente.
+ * Diseñado con un fondo transparente para superponerse sin obstrucciones sobre los lienzos de renderizado.
  */
 public class LoadingPanel extends JPanel {
 
     private int dotCount = 0;
-    private boolean isRunning = true;
 
+    // El modificador volatile asegura que los cambios en el estado de ejecución
+    // sean visibles inmediatamente para el hilo de animación.
+    private volatile boolean isRunning = true;
+
+    /**
+     * Construye un nuevo LoadingPanel e inicia automáticamente el hilo en segundo plano
+     * responsable de actualizar los fotogramas de la animación.
+     */
     public LoadingPanel() {
-        // Makes the panel transparent so it doesn't have a solid background
+        // Hace que el panel sea transparente para no ocultar el gráfico subyacente
         setOpaque(false);
 
-        // Animation thread to cycle the number of dots
+        // Hilo de animación para ciclar el número de puntos
         Runnable r = () -> {
             try {
                 while (isRunning) {
-                    // Cycle dotCount: 0 -> 1 -> 2 -> 3 -> 0...
+                    // Cicla la cantidad de puntos: 0 -> 1 -> 2 -> 3 -> 0...
                     dotCount = (dotCount + 1) % 4;
 
-                    // Request a redraw of the component
+                    // Solicita a Swing que repinte el componente en el Event Dispatch Thread (EDT)
                     repaint();
 
                     Thread.sleep(500);
@@ -32,32 +40,38 @@ public class LoadingPanel extends JPanel {
                 Thread.currentThread().interrupt();
             }
         };
-        new Thread(r).start();
+        // Nombramos el hilo para facilitar la depuración en caso de volcados de memoria
+        new Thread(r, "jPlot-LoadingAnimator").start();
     }
 
+    /**
+     * Sobrescribe el método de pintado de Swing para renderizar la secuencia de carga.
+     *
+     * @param g El contexto gráfico proporcionado por el sistema de ventanas.
+     */
     @Override
     protected void paintComponent(Graphics g) {
         super.paintComponent(g);
 
-        // Use Graphics2D for smoother circles (anti-aliasing)
+        // Activamos Graphics2D para aplicar suavizado (antialiasing) a los bordes de los círculos
         Graphics2D g2d = (Graphics2D) g;
         g2d.setRenderingHint(RenderingHints.KEY_ANTIALIASING, RenderingHints.VALUE_ANTIALIAS_ON);
 
         int width = getWidth();
         int height = getHeight();
 
-        // Dot settings
+        // Configuración geométrica de los puntos
         int dotSize = 10;
         int spacing = 15;
         g2d.setColor(Color.WHITE);
 
-        // Calculate the starting X position to keep the 3 dots centered
-        // Total width = (3 dots * size) + (2 spaces * spacing)
+        // Cálculo del eje X inicial para mantener el bloque completo centrado
+        // Anchura total = (3 puntos * tamaño) + (2 espacios intermedios * espaciado)
         int totalWidth = (3 * dotSize) + (2 * spacing);
         int startX = (width - totalWidth) / 2;
         int startY = (height - dotSize) / 2;
 
-        // Draw the dots based on the current animation state
+        // Dibuja la cantidad de puntos correspondientes al estado actual
         for (int i = 0; i < dotCount; i++) {
             int x = startX + (i * (dotSize + spacing));
             g2d.fillOval(x, startY, dotSize, dotSize);
@@ -65,7 +79,9 @@ public class LoadingPanel extends JPanel {
     }
 
     /**
-     * Stops the animation thread.
+     * Detiene de forma segura el bucle de animación.
+     * Es imperativo invocar este método cuando el proceso de carga termine o el panel
+     * sea destruido para evitar fugas de memoria asociadas a hilos huérfanos.
      */
     public void stop() {
         this.isRunning = false;
