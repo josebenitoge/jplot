@@ -30,7 +30,7 @@ public class MainStackedEmissions {
             p.add("Transporte (Aviación y Terrestre)", years[i], transporte[i]);
             p.add("Residencial y Comercial", years[i], residencial[i]);
         }
-
-        p.img(1920, 1080, "./ejemplos/20_stacked_emissions.png");
+        p.plot();
+        p.img(1920, 1080, "./etc/20_stacked_emissions.png");
     }
 }

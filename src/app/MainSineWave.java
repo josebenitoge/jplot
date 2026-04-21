@@ -8,7 +8,6 @@ public class MainSineWave {
         
         Plotter p = new Plotter("Propagación de Ondas (Seno vs Coseno)", Plotter.LINE_CHART, "Tiempo (t)", "Amplitud (A)");
         p.grid(true, true);
-
         // Onda Seno (Azul Cyan)
         p.create(new Color(0, 180, 216), "name", "Onda Seno", "type", "FUNCTION", "style", "SOLID");
         
@@ -25,7 +24,7 @@ public class MainSineWave {
         p.add("Onda Seno", 0.0, endX, 1500, x -> Math.sin(x));
         p.add("Onda Coseno", 0.0, endX, 1500, x -> Math.cos(x));
         p.add("Reposo", 0.0, endX, 100, x -> 0.0);
-
-        p.img(1920, 1080, "./ejemplos/13_sine_waves.png");
+        p.plot();
+        p.img(1920, 1080, "./etc/13_sine_waves.png");
     }
 }

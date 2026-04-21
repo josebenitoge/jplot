@@ -30,7 +30,7 @@ public class MainStackedTraffic {
             double serverErrors = (hora == 14) ? baseTraffic * 0.25 : baseTraffic * 0.01;
             p.add("5xx (Errores Servidor)", timeLabel, serverErrors);
         }
-
-        p.img(1920, 1080, "./ejemplos/19_stacked_server_traffic.png");
+        p.plot();
+        p.img(1920, 1080, "./etc/19_stacked_server_traffic.png");
     }
 }

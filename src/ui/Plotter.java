@@ -17,6 +17,17 @@ import java.util.function.DoubleUnaryOperator;
  */
 public class Plotter {
 
+    public static final String POLYLINE_PLOT = "POLYLINE";
+
+    public static final String HISTOGRAM_PLOT = "HISTOGRAM";
+
+    public static final String STEP_PLOT = "STEP";
+
+    public static final String CONFUSION_MATRIX = "CONFUSION";
+    public static final String HEATMAP = "HEATMAP";
+
+    public static final String STEM_PLOT = "STEM";
+
     /** Constante para el gráfico de líneas continuas o funciones. */
     public static final String LINE_CHART = "LINE";
 
@@ -88,7 +99,45 @@ public class Plotter {
 
             this.info = hbConfig;
             this.dataset = hbData;
-        } else {
+        }   else if (CONFUSION_MATRIX.equalsIgnoreCase(chartType)) {
+            confusion.ConfusionDataset cData = new confusion.ConfusionDataset();
+            confusion.ConfusionConfig cConfig = new confusion.ConfusionConfig(xTitle, yTitle);
+            cConfig.setDataset(cData);
+            this.info = cConfig;
+            this.dataset = cData;
+        }else if (HEATMAP.equalsIgnoreCase(chartType)) {
+            heatmap.HeatmapDataset hData = new heatmap.HeatmapDataset();
+            heatmap.HeatmapConfig hConfig = new heatmap.HeatmapConfig(xTitle, yTitle);
+            hConfig.setDataset(hData);
+            this.info = hConfig;
+            this.dataset = hData;
+            this.grid(false);
+            this.setBackground(new Color(0x1C1647));
+        } else if (STEM_PLOT.equalsIgnoreCase(chartType)) {
+            stem.StemDataset sData = new stem.StemDataset();
+            stem.StemConfig sConfig = new stem.StemConfig(xTitle, yTitle);
+            sConfig.setDataset(sData);
+            this.info = sConfig;
+            this.dataset = sData;
+        }else if (POLYLINE_PLOT.equalsIgnoreCase(chartType)) {
+            polyline.PolylineDataset pData = new polyline.PolylineDataset();
+            polyline.PolylineConfig pConfig = new polyline.PolylineConfig(xTitle, yTitle);
+            pConfig.setDataset(pData);
+            this.info = pConfig;
+            this.dataset = pData;
+        }else if (STEP_PLOT.equalsIgnoreCase(chartType)) {
+            step.StepDataset sData = new step.StepDataset();
+            step.StepConfig sConfig = new step.StepConfig(xTitle, yTitle);
+            sConfig.setDataset(sData);
+            this.info = sConfig;
+            this.dataset = sData;
+        }else if (HISTOGRAM_PLOT.equalsIgnoreCase(chartType)) {
+            histogram.HistogramDataset hData = new histogram.HistogramDataset();
+            histogram.HistogramConfig hConfig = new histogram.HistogramConfig(xTitle, yTitle);
+            hConfig.setDataset(hData);
+            this.info = hConfig;
+            this.dataset = hData;
+        }else {
             // Por defecto, construimos el universo de líneas continuas
             LineDataset lData = new LineDataset();
             line.ChartConfig lConfig = new line.ChartConfig(xTitle, yTitle);
@@ -265,6 +314,26 @@ public class Plotter {
             System.out.println("Imagen de alta calidad exportada a: " + file.getAbsolutePath());
         } catch (java.io.IOException e) {
             System.err.println("Error al guardar la imagen: " + e.getMessage());
+        }
+    }
+
+    /**
+     * Crea y devuelve un panel de gráfico listo para ser integrado en otros contenedores.
+     * @return Una instancia de ChartPanel configurada con los datos actuales.
+     */
+    public ChartPanel getPanel() {
+        info.setGridH(gridH);
+        info.setGridV(gridV);
+        return new ChartPanel(new LoadingPanel(), info);
+    }
+
+    // Dentro de ui.Plotter.java
+    /**
+     * Cambia el color de fondo del área de renderizado del gráfico.
+     */
+    public void setBackground(Color color) {
+        if (this.info != null) {
+            this.info.setBackgroundColor(color);
         }
     }
 }

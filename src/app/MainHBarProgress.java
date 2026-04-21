@@ -17,7 +17,7 @@ public class MainHBarProgress {
         p.add("Completado", "Desarrollo Backend", 72.0);
         p.add("Completado", "Atención al Cliente", 45.0);
         p.add("Completado", "Ventas Externas", 12.5);
-
-        p.img(1920, 1080, "./ejemplos/10_hbar_progress.png");
+        p.plot();
+        p.img(1920, 1080, "./etc/10_hbar_progress.png");
     }
 }

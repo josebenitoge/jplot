@@ -19,6 +19,7 @@ public class MainBarDemographics {
         p.add("Usuarios Activos", "45-54", 18.4);
         p.add("Usuarios Activos", "55+", 9.3);
 
-        p.img(1920, 1080, "./ejemplos/02_bar_demographics.png");
+        p.plot();
+        p.img(1920, 1080, "./etc/02_bar_demographics.png");
     }
 }

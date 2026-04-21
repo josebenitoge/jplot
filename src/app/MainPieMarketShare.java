@@ -11,17 +11,17 @@ public class MainPieMarketShare {
         p.grid(false, false); 
 
         // Definimos cada porción con su color de marca aproximado
-        p.create(new Color(61, 220, 132), "name", "Android", "type", "PIE");
-        p.create(new Color(0, 0, 0), "name", "iOS", "type", "PIE");
-        p.create(new Color(255, 0, 0), "name", "HarmonyOS", "type", "PIE");
-        p.create(new Color(150, 150, 150), "name", "Otros", "type", "PIE");
+        p.create(new Color(34, 96, 227), "name", "Android", "type", "PIE");
+        p.create(new Color(250, 203, 19), "name", "iOS", "type", "PIE");
+        p.create(new Color(39, 204, 124), "name", "HarmonyOS", "type", "PIE");
+        p.create(new Color(218, 55, 55), "name", "Otros", "type", "PIE");
 
         // Añadimos los porcentajes (El motor debería calcular el total y sacar los ángulos)
         p.add("Android", "Usuarios", 70.1);
         p.add("iOS", "Usuarios", 27.2);
         p.add("HarmonyOS", "Usuarios", 2.0);
         p.add("Otros", "Usuarios", 0.7);
-
-        p.img(1920, 1080, "./ejemplos/15_pie_market_share.png");
+        p.plot();
+        p.img(1920, 1080, "./etc/15_pie_market_share.png");
     }
 }

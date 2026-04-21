@@ -14,8 +14,8 @@ public class MainBarBenchmark {
         p.add("Puntuación", "Core i9 14900K", 36200);
         p.add("Puntuación", "Apple M3 Max", 24000);
         p.add("Puntuación", "Snapdragon X Elite", 15300);
-        //p.plot();
+        p.plot();
         // Exportamos en Full HD
-        p.img(1920, 1080, "./ejemplos/01_bar_benchmark.png");
+        p.img(1920, 1080, "./etc/01_bar_benchmark.png");
     }
 }

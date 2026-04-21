@@ -20,7 +20,7 @@ public class MainHBarRanking {
         p.add("Ofertas", "Java (Enterprise)", 189.5);
         p.add("Ofertas", "JavaScript / Node", 210.8);
         p.add("Ofertas", "Python (Data/AI)", 254.3);
-
-        p.img(1920, 1080, "./ejemplos/09_hbar_ranking.png");
+        p.plot();
+        p.img(1920, 1080, "./etc/09_hbar_ranking.png");
     }
 }

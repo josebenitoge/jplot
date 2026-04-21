@@ -11,7 +11,7 @@ public class MainBubbleMassiveClusters {
         p.grid(true, true);
 
         // Creamos las series con una opacidad muy baja (Alpha = 60) para destacar el solapamiento
-        p.create(new Color(220, 33, 33, 255), "name", "Clúster Alfa", "type", "BUBBLE");
+        p.create(new Color(211, 44, 44, 255), "name", "Clúster Alfa", "type", "BUBBLE");
         p.create(new Color(32, 101, 248, 255), "name", "Clúster Beta", "type", "BUBBLE");
         p.create(new Color(59, 237, 59, 136), "name", "Clúster Gamma", "type", "BUBBLE");
 
@@ -41,7 +41,8 @@ public class MainBubbleMassiveClusters {
             p.add("Clúster Gamma", x, y, size);
         }
 
+        p.plot();
         // Renderizado en 4K para máxima nitidez de los millones de píxeles superpuestos
-        p.img(1920, 1080, "./ejemplos/07_bubble_clusters_massive.png");
+        p.img(1920, 1080, "./etc/07_bubble_clusters_massive.png");
     }
 }

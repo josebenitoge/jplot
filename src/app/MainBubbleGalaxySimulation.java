@@ -46,7 +46,8 @@ public class MainBubbleGalaxySimulation {
             p.add("Núcleo Galáctico", x, y, size);
         }
 
+        p.plot();
         // Exportación de la simulación
-        p.img(1920, 1080, "./ejemplos/08_bubble_galaxy_sim.png");
+        p.img(1920, 1080, "./etc/08_bubble_galaxy_sim.png");
     }
 }

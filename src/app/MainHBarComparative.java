@@ -28,7 +28,7 @@ public class MainHBarComparative {
         // NA (Norteamérica)
         p.add("Satisfecho", "Norteamérica", 6800);
         p.add("Insatisfecho", "Norteamérica", 950);
-
-        p.img(1920, 1080, "./ejemplos/11_hbar_comparative.png");
+        p.plot();
+        p.img(1920, 1080, "./etc/11_hbar_comparative.png");
     }
 }

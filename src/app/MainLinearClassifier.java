@@ -36,7 +36,7 @@ public class MainLinearClassifier {
                 p.add("Clase B (Negativos)", px, py);
             }
         }
-
-        p.img(1920, 1080, "./ejemplos/14_linear_classifier.png");
+        p.plot();
+        p.img(1920, 1080, "./etc/14_linear_classifier.png");
     }
 }

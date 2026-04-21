@@ -231,4 +231,11 @@ public abstract class Config {
     public void setGridV(boolean grid) {
         this.gridV = grid;
     }
+
+    // Dentro de model.Config.java
+    protected Color backgroundColor = new Color(255, 255, 255); // Morado por defecto
+
+    public void setBackgroundColor(Color color) {
+        this.backgroundColor = color;
+    }
 }

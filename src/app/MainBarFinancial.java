@@ -29,6 +29,7 @@ public class MainBarFinancial {
         p.add("Año Anterior", "Q4", 145.0);
         p.add("Año Actual", "Q4", 168.9);
 
-        p.img(1920, 1080, "./ejemplos/03_bar_financial.png");
+        p.plot();
+        p.img(1920, 1080, "./etc/03_bar_financial.png");
     }
 }

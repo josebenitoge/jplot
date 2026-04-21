@@ -32,7 +32,7 @@ public class MainMixedShapes {
         p.create(new Color(248, 181, 11), "name", "Focos", "type", "SCATTER", "style", "POINT");
         p.add("Focos", 0.0, -2.5);
         p.add("Focos", 0.0, 0.0);
-
-        p.img(1920, 1080, "./ejemplos/12_mixed_shapes.png");
+        p.plot();
+        p.img(1920, 1080, "./etc/12_mixed_shapes.png");
     }
 }

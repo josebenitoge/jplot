@@ -29,7 +29,7 @@ public class MainStackedSales {
             p.add("Soporte Técnico", quarters[i], support[i]);
             p.add("Hardware", quarters[i], hardware[i]);
         }
-
-        p.img(1920, 1080, "./ejemplos/18_stacked_sales.png");
+        p.plot();
+        p.img(1920, 1080, "./etc/18_stacked_sales.png");
     }
 }

@@ -15,9 +15,9 @@ public class MainPieEnergyMix {
         p.create(new Color(52, 152, 219), "name", "Hidráulica", "type", "PIE");
         
         // Energías Base / No Renovables (Tonos cálidos y neutros)
-        p.create(new Color(142, 68, 173), "name", "Nuclear", "type", "PIE");
-        p.create(new Color(230, 126, 34), "name", "Ciclo Combinado (Gas)", "type", "PIE");
-        p.create(new Color(90, 90, 90), "name", "Carbón", "type", "PIE");
+        p.create(new Color(33, 21, 128), "name", "Nuclear", "type", "PIE");
+        p.create(new Color(205, 120, 183), "name", "Ciclo Combinado (Gas)", "type", "PIE");
+        p.create(new Color(243, 76, 43), "name", "Carbón", "type", "PIE");
 
         // Valores absolutos (Teravatios-hora). El gráfico los convierte a 360 grados.
         p.add("Eólica", "Generación", 61.2);
@@ -26,7 +26,7 @@ public class MainPieEnergyMix {
         p.add("Solar Fotovoltaica", "Generación", 32.4);
         p.add("Hidráulica", "Generación", 25.1);
         p.add("Carbón", "Generación", 4.2);
-
-        p.img(1920, 1080, "./ejemplos/16_pie_energy_mix.png");
+        p.plot();
+        p.img(1920, 1080, "./etc/16_pie_energy_mix.png");
     }
 }
