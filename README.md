@@ -1,127 +1,82 @@
-# jPlot 📈
-
-jPlot is a high-performance, lightweight Java 2D plotting engine specifically designed for scientific visualization, data analysis, and professional reporting. It features a custom rendering pipeline optimized for pixel-perfect accuracy and high-resolution output.
-
-## Technical Highlights
-
-* **SDF-Based Antialiasing:** Unlike standard rendering, jPlot uses Signed Distance Fields to calculate sub-pixel coverage, ensuring razor-sharp curves and eliminating artifacts at line intersections.
-* **Professional Alpha Compositing:** Implements true alpha blending and max-splatting algorithms, allowing for clean visualization of dense, overlapping datasets without color "muddiness."
-* **Headless 4K Rendering:** Designed to operate without a GUI, enabling the generation of massive ultra-high-definition (3840x2160+) charts directly to disk.
-* **First-Class Function Plotting:** Support for native Java Lambda expressions to render mathematical functions with infinite precision.
-* **Facade Pattern Architecture:** Strict separation of mathematical modeling, rendering, and API presentation for a zero-configuration developer experience.
+# JPlot
+A lightweight Java charting library inspired by Matplotlib. Single-JAR import and minimal code to set up charts. Easy-to-interpret visualizations. Extremely lightweight with hassle-free installation, yet packed with deep customization options so your charts look exactly the way you want. Clean architecture and intuitive facade. Designed from the ground up to be fully friendly to AI agents and automated code generation workflows, allowing large language models to write, reason about, and execute plotting scripts effortlessly without complex boilerplate.
 
 ---
 
-## Visual Gallery
+## Key Features
 
-### 🌡️ Heatmap Density Analysis
-Multi-class distribution rendering with alpha-blended Gaussian splatting.
-![Heatmap](etc/26_heatmap.png)
-
-### 📊 Statistical Histograms
-Auto-binning and alpha-blended distributions for continuous variables.
-![Histogram](etc/25_histogram.png)
-
-### 📍 Discrete Time Signals (Stem Plot)
-SDF-rendered stems and programmable markers for DSP applications.
-![Stem Plot](etc/24_stem.png)
-
-### 📉 Categorical Time-Series (Polyline & Step Plots)
-Custom axis formatting and orthogonal step plotting for indexed and temporal data.
-![Step Plot](etc/23_step.png)
-![Polyline Plot](etc/25_polyline.png)
-
-### 🏢 Grouped & Stacked Bars
-Financial reporting with automatic spatial grouping and cumulative limit scaling.
-![Bar Financial](etc/03_bar_financial.png)
-![Stacked Server Traffic](etc/19_stacked_server_traffic.png)
-
-### 🔭 Scientific & Mathematical Functions
-Advanced rendering of trigonometric and polynomial functions using smooth-step interpolation.
-![Mathematical Functions](etc/13_sine_waves.png)
-
-### 🌌 High-Density Data (Bubble Charts)
-Visualization of massive datasets using custom alpha-blending to highlight clusters.
-![Galaxy Simulation](etc/08_bubble_galaxy_sim.png)
-
-### 🍰 Sector Distribution (Pie Chart)
-Clean pie charts with precise radial SDF antialiasing for professional reports.
-![Pie Chart Example](etc/15_pie_market_share.png)
-
-### 📏 Linear Classification & Geometry
-Intersection of functional lines with scattered datasets, demonstrating spatial classification.
-![Linear Classifier](etc/14_linear_classifier.png)
-
-### 📑 Horizontal Comparisons
-Optimized layout for categorical rankings and comparative horizontal analysis.
-![Horizontal Comparative](etc/11_hbar_comparative.png)
-![Horizontal Progress](etc/10_hbar_progress.png)
-
----
-
-## 🖼️ Multi-Chart Dashboards & Composition
-The `MultiPlotter` engine allows for the orchestration of multiple independent charts into a unified grid-based dashboard.
-
-![Full Dashboard](etc/21_full_dashboard.png)
-
----
-
-## Quick Start
-
-### 1. Basic Line Chart
-```java
-import ui.Plotter;
-import java.awt.Color;
-
-public class ChartApp {
-    public static void main(String[] args) {
-        Plotter p = new Plotter("Performance Metrics", Plotter.LINE_PLOT, "Time", "Value");
-        p.create(new Color(41, 128, 185), "name", "Sensor A", "type", "LINE", "style", "SOLID");
-        p.add("Sensor A", 1.0, 10.5);
-        p.add("Sensor A", 2.0, 15.2);
-        p.img(3840, 2160, "output.png");
-    }
-}
-```
-
-### 2. Functional Plotting
-```java
-import ui.Plotter;
-import java.awt.Color;
-
-public class MathAnalysis {
-    public static void main(String[] args) {
-        Plotter p = new Plotter("Waveform", Plotter.LINE_PLOT, "X", "Y");
-        p.create(Color.RED, "name", "Sine Wave", "type", "FUNCTION");
-        p.add("Sine Wave", 0.0, 10.0, 1000, x -> Math.sin(x));
-        p.img(1920, 1080, "function.png");
-    }
-}
-```
-
-### 3. Categorical Polyline
-```java
-import ui.Plotter;
-import java.awt.Color;
-
-public class CategoryApp {
-    public static void main(String[] args) {
-        Plotter p = new Plotter("Weekly Index", Plotter.POLYLINE_PLOT, "Days", "Value");
-        p.create(new Color(0, 85, 140), "name", "Metric", "marker", "CIRCLE");
-
-        p.add("Metric", "Mon", 100.2);
-        p.add("Metric", "Tue", 108.3);
-        p.add("Metric", "Wed", 105.0);
-
-        p.plot();
-    }
-}
-```
-
+* **Single-JAR Architecture:** Completely lightweight design with zero heavy external dependencies for effortless project integration.
+* **Advanced SDF Rendering:** Custom mathematical engine featuring Signed Distance Fields anti-aliasing for ultra-smooth lines, heatmaps, and discrete stem plots.
+* **AI-Friendly Design:** Intuitive Facade pattern (`Plotter`) and modular structure optimized for seamless automated code generation and interaction with large language models.
+* **Flexible Output:** Display charts instantly in interactive Swing JFrame windows or export them cleanly as image files.
 ---
 
 ## Installation
-Currently, jPlot can be integrated by including the `src` files into your project. No external dependencies are required.
+
+Download the latest release JAR file and add it to your project's libraries or classpath.
+
+---
+## Quick Start
+
+Initialize the chart using the intuitive `Plotter` facade, add your data points, and render the visualization instantly with minimal code.
+![Rendered Line Chart](etc/31_quickstart.png)
+```java
+import ui.Plotter;
+import java.awt.Color;
+
+public class Main {
+    public static void main(String[] args) {
+        Plotter plotter = new Plotter("Simple Chart", Plotter.POLYLINE_PLOT, "X Axis", "Y Axis");
+        plotter.create(Color.BLUE, "name", "Dataset 1");
+        plotter.add("Dataset 1", 1.0, 2.0);
+        plotter.add("Dataset 1", 2.0, 4.0);
+        plotter.add("Dataset 1", 3.0, 6.0);
+        plotter.plot();
+    }
+}
+```
+
+## More Visualization Examples
+
+Here are examples of different plot types rendered with the library:
+![Heatmap Example](etc/26_heatmap.png)
+![Stem Plot Example](etc/29_trigo.png)
+![Stem Plot Example](etc/28_polilyne.png)
+
+## Documentation & Examples
+
+For more advanced use cases, custom configurations, and detailed guides, check out the following resources:
+
+* [Full Documentation (DOC.md)](DOC.md)
+* [Code Examples (EXAMPLES.md)](EXAMPLES.md)
+
+---
+
+## Project Structure
+
+The project is organized into modular packages, cleanly separating core abstractions, specific chart implementations, UI components, and application examples:
+
+* `app/`: Executable examples, benchmarks, and demo applications showcasing the wide variety of supported chart types.
+* Chart Modules (`bar`, `bubble`, `confusion`, `hbar`, `heatmap`, `histogram`, `line`, `pie`, `polyline`, `stackedbar`, `stem`, `step`): Dedicated packages for each visualization type, containing their respective configurations, datasets, series, points, and custom renderers.
+* `model/`: Core data structures and base classes shared across the library (`Config`, `Dataset`, `Point`, `Series`, `Pixel`).
+* `multi/`: Utilities and controllers for managing multi-plot layouts (`MultiPlotter`).
+* `ui/`: Swing-based graphical interface components (`ChartFrame`, `ChartPanel`, `LoadingPanel`) and the primary `Plotter` facade.
+---
+
+## Contributing
+
+Contributions are welcome! If you would like to contribute, please follow these steps:
+
+1. Fork the repository.
+2. Create a new feature branch (`git checkout -b feature/AmazingFeature`).
+3. Commit your changes (`git commit -m 'Add some AmazingFeature'`).
+4. Push to the branch (`git push origin feature/AmazingFeature`).
+5. Open a Pull Request.
+
+For major changes or bug reports, please open an issue first to discuss what you would like to change.
+
+---
 
 ## License
-This project is licensed under the MIT License - see the [LICENSE](LICENSE) file for details.
+
+This project is distributed under the terms of the MIT License. See the [License File](LICENSE) for more details.
