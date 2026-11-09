@@ -19,6 +19,7 @@ Download the latest release JAR file and add it to your project's libraries or c
 ## Quick Start
 
 Initialize the chart using the intuitive `Plotter` facade, add your data points, and render the visualization instantly with minimal code.
+
 ![Rendered Line Chart](etc/31_quickstart.png)
 ```java
 import ui.Plotter;
