@@ -222,3 +222,30 @@ Each chart type implements its own `Dataset` and `Point` logic, accepting specif
     * Accepts a base `Color` to tint the classification intensity gradient (defaults to an internal `"Matrix"` series).
 * **`add()` Usage:**
     * `plotter.add(String actualClass, String predictedClass, double value);` (Registers performance counts or frequency weights between actual and predicted classes, automatically rendering a dynamic cell intensity grid and embedded text overlays with contrast-aware coloring).
+
+## 3. Multi-Plot Dashboards (`multi.MultiPlotter`)
+
+`MultiPlotter` is a composition engine that groups multiple configured `Plotter` instances into a unified grid layout (` rows x cols `), supporting both interactive desktop dashboard rendering and single-image headless export.
+
+### Constructor
+
+```java
+public MultiPlotter(String title, int rows, int cols)
+```
+
+* **`title`**: Window title for the dashboard frame.
+* **`rows`**: Number of horizontal rows in the grid.
+* **`cols`**: Number of vertical columns in the grid.
+
+---
+
+### Dashboard Methods
+
+* **`void add(Plotter p)`**
+  Appends a pre-configured `Plotter` instance to the next available cell in the grid (populated left-to-right, top-to-bottom). Accepts up to `rows * cols` charts; extra instances beyond grid capacity are ignored with a console warning.
+
+* **`void plot()`**
+  Opens a single native Swing window (`JFrame`, default size `1200x800`) displaying all registered charts arranged in a `GridLayout` with a `10px` gap between cells.
+
+* **`void img(int width, int height, String path)`**
+  Exports the complete multi-plot dashboard to a single `.png` image file at the specified total resolution (`width` x `height`). Automatically subdivides the canvas into equal cells (`width / cols` by `height / rows`) and renders each `Plotter` panel in headless mode.
